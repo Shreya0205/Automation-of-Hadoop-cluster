@@ -6,16 +6,16 @@ Flow:
    HDFS, MapReduce, Client page
 
 2. Client Page
-2.1 Configuration client via ansible and file handling
-2.2 Browse, upload, delete and list files
-2.3 process and analysis of data via mapper and reducer programs
+- Configuration client via ansible and file handling
+- Browse, upload, delete and list files
+- process and analysis of data via mapper and reducer programs
 
 3. Analysis of data: Movies data
-3.1. Category wise representation
-3.2. Listing according to user ratings
-3.3. Graphical representation of the aggregate rating of movies
+- Category wise representation
+- Listing according to user ratings
+- Graphical representation of the aggregate rating of movies
 
-##Technologies Used:
+## Technologies Used:
 - OS: Redhat, Centos                                             
 - Front End: HTML, CSS, Javascript
 - Backend: Ansible, python, python CGI            
