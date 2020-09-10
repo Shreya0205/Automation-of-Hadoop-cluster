@@ -1,0 +1,4 @@
+[jobtracker]
+172.17.0.2 ansible_ssh_user=root ansible_ssh_pass=redhat
+[tasktracker]
+172.17.0.3 ansible_ssh_user=root ansible_ssh_pass=redhat

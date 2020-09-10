@@ -1,0 +1,86 @@
+---
+- hosts: all
+  tasks:
+   - service:
+       name: "docker"
+       state: started
+
+   - service:
+        name: "firewalld"
+        state: stopped
+
+   - package:
+        name: "jdk"
+        state: present
+
+   - package:
+        name: "hadoop"
+        state: present
+
+
+- hosts: master
+  tasks:
+   - docker:
+       name: "masternode"
+       image: "apacheimg:v1"
+       state: started
+       tty: true
+      
+
+   - file:
+       state: directory
+       path: "/name"
+
+
+- hosts: slave
+  tasks:
+   - docker_container:
+       name: "datanode"
+       image: "apacheimg:v1"
+       state: started
+       tty: true
+       volume: /data
+
+   - file:
+       state: directory
+       path: "/datanode"
+
+
+- hosts: master:slave 
+  tasks:
+   - copy:
+       src: "/mnt/hdfs-site.xml"
+       dest: "/etc/hadoop/hdfs-site.xml"
+
+
+- hosts: master:slave:jobtracker
+  tasks:
+   - copy:
+       src: "/mnt/core-site.xml"
+       dest: "/etc/hadoop/core-site.xml"
+
+
+- hosts: jobtracker:tasktracker
+  tasks:
+   - copy:
+       src: "/mnt/mapred-site.xml"
+       dest: "/etc/hadoop/mapred-site.xml"
+
+
+- hosts: jobtracker
+  tasks:
+   - docker_container:
+       name: "jobtracker"
+       image: "apacheimg:v1"
+       state: started
+       tty: true
+
+
+- hosts: jobtracker
+  tasks:
+   - docker_container:
+       name: "jobtracker"
+       image: "apacheimg:v1"
+       state: started
+       tty: true
+

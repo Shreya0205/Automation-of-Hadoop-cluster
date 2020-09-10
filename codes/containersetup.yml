@@ -1,0 +1,11 @@
+---
+- hosts: linux
+  tasks:
+  - docker_container:
+       name: 'ondemandcluster1'
+       image: 'testing:v1'
+       state: started
+       tty: true
+       interactive: true
+       detach: true
+       privileged: true

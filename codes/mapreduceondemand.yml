@@ -1,0 +1,75 @@
+---
+
+- hosts: master
+  tasks:
+   - file: 
+       state: directory
+       path: "/clusterdir"
+
+- hosts: slaves
+  tasks:
+       - lvol:
+              lv: lv1
+              vg: myvg
+              size: 5
+
+       - command: mkfs.ext4  /dev/myvg/lv1
+
+       - file:
+              state: directory
+              path: /clusterdir
+
+       - mount:
+              path: /clusterdir
+              src: /dev/myvg/lv1
+              fstype: ext4
+              state: mounted
+
+- hosts: master
+  tasks:
+   - copy:
+       src: "/webcontent/xml/hdfs-site.xml"
+       dest: "/etc/hadoop/hdfs-site.xml"
+
+- hosts: slaves 
+  tasks:
+   - copy:
+       src: "/webcontent/xml/slavehdfs-site.xml"
+       dest: "/etc/hadoop/hdfs-site.xml"
+
+
+
+- hosts: master:slaves:jobtracker:client
+  tasks:
+   - copy:
+       src: "/webcontent/xml/ondemandmapcore-site.xml"
+       dest: "/etc/hadoop/core-site.xml"
+
+
+- hosts: jobtracker:tasktracker:client
+  tasks:
+   - copy:
+       src: "/webcontent/xml/ondemandmapred-site.xml"
+       dest: "/etc/hadoop/mapred-site.xml"
+
+
+- hosts: jobtracker
+  tasks:
+   - command: hadoop-daemon.sh start jobtracker
+
+
+- hosts: tasktracker
+  tasks:
+   - command: hadoop-daemon.sh start tasktracker
+
+- hosts: slaves
+  tasks:
+   - command: hadoop-daemon.sh start datanode
+
+- hosts: master
+  tasks:
+   - command: echo Y | hadoop namenode -format
+
+   - command: hadoop-daemon.sh start namenode
+
+ 
